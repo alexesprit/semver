@@ -46,12 +46,19 @@ fn parse_range(input string) ?Range {
 	mut comparator_sets := []ComparatorSet
 
 	for raw_comp_set in raw_comparator_sets {
-		s := parse_comparator_set(raw_comp_set) or {
-			// FIXME
-			return error('FIXME')
+		if can_expand(raw_comp_set) {
+			s := expand_comparator_set(raw_comp_set) or {
+				// FIXME
+				return error('FIXME')
+			}
+			comparator_sets << s
+		} else {
+			s := parse_comparator_set(raw_comp_set) or {
+				// FIXME
+				return error('FIXME')
+			}
+			comparator_sets << s
 		}
-
-		comparator_sets << s
 	}
 
 	return Range { comparator_sets }
@@ -121,4 +128,65 @@ fn (c Comparator) satisfies(v Version) bool {
 	}
 
 	return false
+}
+
+fn can_expand(input string) bool {
+	return
+		input.starts_with('~') ||
+		input.starts_with('^')
+}
+
+fn expand_comparator_set(input string) ?ComparatorSet {
+	match input[0] {
+		`~` {
+			return expand_tilda(input[1..])
+		}
+		`^` {
+			return expand_caret(input[1..])
+		}
+		else {}
+	}
+
+	return none
+}
+
+fn expand_tilda(raw_version string) ?ComparatorSet {
+	min_ver := from(raw_version) or {
+		return none
+	}
+
+	mut max_ver := min_ver
+
+	if min_ver.minor == 0 && min_ver.patch == 0 {
+		max_ver = min_ver.increment(.major)
+	} else {
+		max_ver = min_ver.increment(.minor)
+	}
+
+	return make_comparator_set(min_ver, max_ver)
+}
+
+fn expand_caret(raw_version string) ?ComparatorSet {
+	min_ver := from(raw_version) or {
+		return none
+	}
+
+	mut max_ver := min_ver
+
+	if min_ver.major == 0 {
+		max_ver = min_ver.increment(.minor)
+	} else {
+		max_ver = min_ver.increment(.major)
+	}
+
+	return make_comparator_set(min_ver, max_ver)
+}
+
+fn make_comparator_set(min, max Version) ComparatorSet {
+	comparators := [
+		Comparator { min, Operator.ge },
+		Comparator { max, Operator.lt }
+	]
+
+	return ComparatorSet { comparators }
 }
