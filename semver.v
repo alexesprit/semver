@@ -29,7 +29,7 @@ pub enum Increment {
 
 // from returns Version structure parsed from input string.
 pub fn from(input string) ?Version {
-	if (input.len == 0) {
+	if input.len == 0 {
 		return error('Empty input')
 	}
 
@@ -37,6 +37,7 @@ pub fn from(input string) ?Version {
 	version := raw_version.validate() or {
 		return error('Invalid version format')
 	}
+
 	return version
 }
 
@@ -46,27 +47,7 @@ pub fn from(input string) ?Version {
 
 // increment returns Version structure with incremented values.
 pub fn (ver Version) increment(typ Increment) Version {
-	mut major := ver.major
-	mut minor := ver.minor
-	mut patch := ver.patch
-
-	match typ {
-		.major {
-			major++
-			minor = 0
-			patch = 0
-		}
-		.minor {
-			minor++
-			patch = 0
-		}
-		.patch {
-			patch++
-		}
-		else {}
-	}
-
-	return Version { major, minor, patch, ver.prerelease, ver.metadata }
+	return increment_version(ver, typ)
 }
 
 /*
@@ -82,11 +63,7 @@ pub fn (ver Version) satisfies(input string) bool {
 }
 
 pub fn (v1 Version) eq(v2 Version) bool {
-	return
-		v1.major == v2.major &&
-		v1.minor == v2.minor &&
-		v1.patch == v2.patch &&
-		v1.prerelease == v2.prerelease
+	return compare_eq(v1, v2)
 }
 
 pub fn (v1 Version) gt(v2 Version) bool {

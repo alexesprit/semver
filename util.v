@@ -4,6 +4,30 @@ module semver
  * Private functions.
  */
 
+fn increment_version(ver Version, typ Increment) Version {
+	mut major := ver.major
+	mut minor := ver.minor
+	mut patch := ver.patch
+
+	match typ {
+		.major {
+			major++
+			minor = 0
+			patch = 0
+		}
+		.minor {
+			minor++
+			patch = 0
+		}
+		.patch {
+			patch++
+		}
+		else {}
+	}
+
+	return Version { major, minor, patch, ver.prerelease, ver.metadata }
+}
+
 fn is_valid_string(input string) bool {
 	for c in input {
 		if !(c.is_letter() || c.is_digit() || c == `.` || c == `-`) {

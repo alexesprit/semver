@@ -4,6 +4,14 @@ module semver
  * Private functions.
  */
 
+fn compare_eq(v1, v2 Version) bool {
+	return
+		v1.major == v2.major &&
+		v1.minor == v2.minor &&
+		v1.patch == v2.patch &&
+		v1.prerelease == v2.prerelease
+}
+
 fn compare_gt(v1, v2 Version) bool {
 	if v1.major < v2.major {
 		return false
@@ -45,7 +53,7 @@ fn compare_lt(v1, v2 Version) bool {
 }
 
 fn compare_ge(v1, v2 Version) bool {
-	if v1.eq(v2) {
+	if compare_eq(v1, v2) {
 		return true
 	}
 
@@ -53,7 +61,7 @@ fn compare_ge(v1, v2 Version) bool {
 }
 
 fn compare_le(v1, v2 Version) bool {
-	if v1.eq(v2) {
+	if compare_eq(v1, v2) {
 		return true
 	}
 
