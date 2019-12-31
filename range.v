@@ -32,7 +32,7 @@ fn (r Range) satisfies(ver Version) bool {
 		comparators := set.comparators
 
 		for comp in comparators {
-			set_result = set_result && comp.satisfy(ver)
+			set_result = set_result && comp.satisfies(ver)
 		}
 
 		final_result = final_result || set_result
@@ -100,7 +100,7 @@ fn parse_comparator(input string) ?Comparator {
 	return Comparator { version, op }
 }
 
-pub fn (c Comparator) satisfy(v Version) bool {
+fn (c Comparator) satisfies(v Version) bool {
 	match c.op {
 		.gt {
 			return v.gt(c.ver)
