@@ -15,6 +15,11 @@ struct TestRange {
 	range_unsatisfied string
 }
 
+struct TestCoerce {
+	invalid string
+	valid string
+}
+
 const (
 	versions_to_test = [
 		TestVersion {
@@ -89,6 +94,37 @@ const (
 			'2.3.4',
 			'^0.0.1 || ^2.3.0',
 			'^3.1.0 || ^4.2.0',
+		}
+	]
+
+	coerce_to_test = [
+		TestCoerce {
+			'1.2.0.4',
+			'1.2.0'
+		},
+		TestCoerce {
+			'1.2.0',
+			'1.2.0'
+		},
+		TestCoerce {
+			'1.2',
+			'1.2.0'
+		},
+		TestCoerce {
+			'1',
+			'1.0.0'
+		},
+		TestCoerce {
+			'1-alpha',
+			'1.0.0-alpha'
+		},
+		TestCoerce {
+			'1+meta',
+			'1.0.0+meta'
+		},
+		TestCoerce {
+			'1-alpha+meta',
+			'1.0.0-alpha+meta'
 		}
 	]
 
@@ -181,5 +217,17 @@ fn test_satisfies() {
 
 		assert ver.satisfies(item.range_satisfied)
 		assert !ver.satisfies(item.range_unsatisfied)
+	}
+}
+
+fn test_coerce() {
+	for item in coerce_to_test {
+		valid := semver.from(item.valid) or {
+			assert false
+			return
+		}
+
+		fixed := semver.coerce(item.invalid)
+		assert fixed.eq(valid)
 	}
 }

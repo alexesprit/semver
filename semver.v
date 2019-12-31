@@ -33,10 +33,8 @@ pub fn from(input string) ?Version {
 		return error('Empty input')
 	}
 
-	raw_version := parse(input) or {
-		return error('Invalid version format')
-	}
-	version := validate(raw_version) or {
+	raw_version := parse(input)
+	version := raw_version.validate() or {
 		return error('Invalid version format')
 	}
 	return version
@@ -105,4 +103,12 @@ pub fn (v1 Version) ge(v2 Version) bool {
 
 pub fn (v1 Version) le(v2 Version) bool {
 	return compare_le(v1, v2)
+}
+
+/*
+ * Utilites.
+ */
+
+pub fn coerce(input string) Version {
+	return coerce_version(input)
 }
