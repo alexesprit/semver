@@ -239,3 +239,11 @@ fn test_coerce() {
 		assert fixed.eq(valid)
 	}
 }
+
+fn test_coerce_invalid() {
+	semver.coerce('a') or {
+		assert true
+		return
+	}
+	assert false
+}

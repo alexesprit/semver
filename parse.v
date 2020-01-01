@@ -45,9 +45,12 @@ fn parse(input string) RawVersion {
 	}
 }
 
-fn coerce_version(input string) Version {
+fn coerce_version(input string) ?Version {
 	raw_ver := parse(input)
-	return raw_ver.coerce()
+	ver := raw_ver.coerce() or {
+		return error('Invalid version: $input')
+	}
+	return ver
 }
 
 fn make_version(raw_ints []string, prerelease, metadata string) Version {
@@ -73,10 +76,14 @@ fn (ver RawVersion) is_valid() bool {
 		is_valid_string(ver.metadata)
 }
 
-fn (raw_ver RawVersion) coerce() Version {
+fn (raw_ver RawVersion) coerce() ?Version {
 	mut raw_ints := raw_ver.raw_ints
 	for raw_ints.len < 3 {
 		raw_ints << '0'
+	}
+
+	if !is_valid_number(raw_ints[Major]) {
+		return error('Invalid major version: $raw_ints[Major]')
 	}
 
 	return make_version(raw_ints, raw_ver.prerelease, raw_ver.metadata)

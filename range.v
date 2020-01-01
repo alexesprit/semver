@@ -100,7 +100,9 @@ fn parse_comparator(input string) ?Comparator {
 		raw_version = input
 	}
 
-	version := coerce_version(raw_version)
+	version := coerce_version(raw_version) or {
+		return none
+	}
 	return Comparator { version, op }
 }
 
@@ -144,11 +146,18 @@ fn expand_comparator_set(input string) ?ComparatorSet {
 		else {}
 	}
 
+	// hyphen_idx := input.index(HyphenRangeSep)
+	// if (hyphen_idx > 0) {
+	// 	return expand_hyphen(input)
+	// }
+
 	return none
 }
 
 fn expand_tilda(raw_version string) ?ComparatorSet {
-	min_ver := coerce_version(raw_version)
+	min_ver := coerce_version(raw_version) or {
+		return none
+	}
 	mut max_ver := min_ver
 
 	if min_ver.minor == 0 && min_ver.patch == 0 {
