@@ -66,8 +66,11 @@ fn parse_range(input string) ?Range {
 
 fn parse_comparator_set(input string) ?ComparatorSet {
 	raw_comparators := input.split(ComparatorSep)
-	mut comparators := []Comparator
+	if raw_comparators.len > 2 {
+		return error('Invalid format of comparator set')
+	}
 
+	mut comparators := []Comparator
 	for raw_comp in raw_comparators {
 		c := parse_comparator(raw_comp) or {
 			// FIXME
