@@ -48,14 +48,12 @@ fn parse_range(input string) ?Range {
 	for raw_comp_set in raw_comparator_sets {
 		if can_expand(raw_comp_set) {
 			s := expand_comparator_set(raw_comp_set) or {
-				// FIXME
-				return error('FIXME')
+				return error('Invalid comparator set: $raw_comp_set')
 			}
 			comparator_sets << s
 		} else {
 			s := parse_comparator_set(raw_comp_set) or {
-				// FIXME
-				return error('FIXME')
+				return error('Invalid comparator set: $raw_comp_set')
 			}
 			comparator_sets << s
 		}
@@ -73,8 +71,7 @@ fn parse_comparator_set(input string) ?ComparatorSet {
 	mut comparators := []Comparator
 	for raw_comp in raw_comparators {
 		c := parse_comparator(raw_comp) or {
-			// FIXME
-			return error('FIXME')
+			return error('Invalid comparator: $raw_comp')
 		}
 
 		comparators << c
