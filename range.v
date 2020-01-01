@@ -170,7 +170,7 @@ fn expand_tilda(raw_version string) ?ComparatorSet {
 }
 
 fn expand_caret(raw_version string) ?ComparatorSet {
-	min_ver := from(raw_version) or {
+	min_ver := coerce_version(raw_version) or {
 		return none
 	}
 
