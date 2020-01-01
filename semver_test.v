@@ -94,6 +94,11 @@ const (
 			'2.3.4',
 			'^0.0.1 || ^2.3.0',
 			'^3.1.0 || ^4.2.0',
+		},
+		TestRange {
+			'2.3.4',
+			'>2 || <3',
+			'>3 || >4',
 		}
 	]
 
@@ -227,7 +232,10 @@ fn test_coerce() {
 			return
 		}
 
-		fixed := semver.coerce(item.invalid)
+		fixed := semver.coerce(item.invalid) or {
+			assert false
+			return
+		}
 		assert fixed.eq(valid)
 	}
 }

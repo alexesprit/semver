@@ -100,10 +100,7 @@ fn parse_comparator(input string) ?Comparator {
 		raw_version = input
 	}
 
-	version := from(raw_version) or {
-		return error('Invalid comparator')
-	}
-
+	version := coerce_version(raw_version)
 	return Comparator { version, op }
 }
 
@@ -151,10 +148,7 @@ fn expand_comparator_set(input string) ?ComparatorSet {
 }
 
 fn expand_tilda(raw_version string) ?ComparatorSet {
-	min_ver := from(raw_version) or {
-		return none
-	}
-
+	min_ver := coerce_version(raw_version)
 	mut max_ver := min_ver
 
 	if min_ver.minor == 0 && min_ver.patch == 0 {
