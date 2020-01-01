@@ -4,6 +4,16 @@ module semver
  * Private functions.
  */
 
+[inline]
+fn coerce_version(input string) ?Version {
+	raw_ver := parse(input)
+	ver := raw_ver.coerce() or {
+		return error('Invalid version: $input')
+	}
+	return ver
+}
+
+[inline]
 fn increment_version(ver Version, typ Increment) Version {
 	mut major := ver.major
 	mut minor := ver.minor

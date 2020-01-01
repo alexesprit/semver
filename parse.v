@@ -45,14 +45,6 @@ fn parse(input string) RawVersion {
 	}
 }
 
-fn coerce_version(input string) ?Version {
-	raw_ver := parse(input)
-	ver := raw_ver.coerce() or {
-		return error('Invalid version: $input')
-	}
-	return ver
-}
-
 fn make_version(raw_ints []string, prerelease, metadata string) Version {
 	return Version {
 		raw_ints[Major].int(),

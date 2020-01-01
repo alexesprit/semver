@@ -27,19 +27,45 @@ struct Range {
 
 fn (r Range) satisfies(ver Version) bool {
 	mut final_result := false
-	sets := r.comparator_sets
-	for set in sets {
-		mut set_result := true
-		comparators := set.comparators
 
-		for comp in comparators {
-			set_result = set_result && comp.satisfies(ver)
-		}
-
-		final_result = final_result || set_result
+	for set in r.comparator_sets {
+		final_result = final_result || set.satisfies(ver)
 	}
 
 	return final_result
+}
+
+fn (set ComparatorSet) satisfies(ver Version) bool {
+	for comp in set.comparators {
+		if !comp.satisfies(ver) {
+			return false
+		}
+	}
+
+	return true
+}
+
+fn (c Comparator) satisfies(ver Version) bool {
+	return match c.op {
+		.gt {
+			ver.gt(c.ver)
+		}
+		.lt {
+			ver.lt(c.ver)
+		}
+		.ge {
+			ver.ge(c.ver)
+		}
+		.le {
+			ver.le(c.ver)
+		}
+		.eq {
+			ver.eq(c.ver)
+		}
+		else {
+			false
+		}
+	}
 }
 
 fn parse_range(input string) ?Range {
@@ -105,29 +131,6 @@ fn parse_comparator(input string) ?Comparator {
 		return none
 	}
 	return Comparator { version, op }
-}
-
-fn (c Comparator) satisfies(v Version) bool {
-	match c.op {
-		.gt {
-			return v.gt(c.ver)
-		}
-		.lt {
-			return v.lt(c.ver)
-		}
-		.ge {
-			return v.ge(c.ver)
-		}
-		.le {
-			return v.le(c.ver)
-		}
-		.eq {
-			return v.eq(c.ver)
-		}
-		else {}
-	}
-
-	return false
 }
 
 fn can_expand(input string) bool {

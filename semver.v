@@ -55,11 +55,7 @@ pub fn (ver Version) increment(typ Increment) Version {
  */
 
 pub fn (ver Version) satisfies(input string) bool {
-	range := parse_range(input) or {
-		return false
-	}
-
-	return range.satisfies(ver)
+	return version_satisfies(ver, input)
 }
 
 pub fn (v1 Version) eq(v2 Version) bool {
