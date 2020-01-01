@@ -7,6 +7,7 @@ module semver
 const (
 	ComparatorSep = ' '
 	ComparatorSetSep = ' || '
+	HyphenRangeSep = ' - '
 )
 
 enum Operator { gt lt ge le eq }
@@ -131,8 +132,7 @@ fn (c Comparator) satisfies(v Version) bool {
 
 fn can_expand(input string) bool {
 	return
-		input.starts_with('~') ||
-		input.starts_with('^')
+		input[0] == `~` || input[0] == `^` || input.contains(HyphenRangeSep)
 }
 
 fn expand_comparator_set(input string) ?ComparatorSet {
@@ -146,10 +146,9 @@ fn expand_comparator_set(input string) ?ComparatorSet {
 		else {}
 	}
 
-	// hyphen_idx := input.index(HyphenRangeSep)
-	// if (hyphen_idx > 0) {
-	// 	return expand_hyphen(input)
-	// }
+	if (input.contains(HyphenRangeSep)) {
+		return expand_hyphen(input)
+	}
 
 	return none
 }
@@ -166,7 +165,7 @@ fn expand_tilda(raw_version string) ?ComparatorSet {
 		max_ver = min_ver.increment(.minor)
 	}
 
-	return make_comparator_set(min_ver, max_ver)
+	return make_comparator_set_ge_lt(min_ver, max_ver)
 }
 
 fn expand_caret(raw_version string) ?ComparatorSet {
@@ -182,13 +181,40 @@ fn expand_caret(raw_version string) ?ComparatorSet {
 		max_ver = min_ver.increment(.major)
 	}
 
-	return make_comparator_set(min_ver, max_ver)
+	return make_comparator_set_ge_lt(min_ver, max_ver)
 }
 
-fn make_comparator_set(min, max Version) ComparatorSet {
+fn expand_hyphen(raw_range string) ?ComparatorSet {
+	raw_versions := raw_range.split(HyphenRangeSep)
+	if raw_versions.len != 2 {
+		return none
+	}
+
+	min_ver := coerce_version(raw_versions[0]) or {
+		return none
+	}
+	max_ver := coerce_version(raw_versions[1]) or {
+		return none
+	}
+
+	println(1)
+
+	return make_comparator_set_ge_le(min_ver, max_ver)
+}
+
+fn make_comparator_set_ge_lt(min, max Version) ComparatorSet {
 	comparators := [
 		Comparator { min, Operator.ge },
 		Comparator { max, Operator.lt }
+	]
+
+	return ComparatorSet { comparators }
+}
+
+fn make_comparator_set_ge_le(min, max Version) ComparatorSet {
+	comparators := [
+		Comparator { min, Operator.ge },
+		Comparator { max, Operator.le }
 	]
 
 	return ComparatorSet { comparators }
