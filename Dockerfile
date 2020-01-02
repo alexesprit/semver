@@ -1,5 +1,5 @@
 FROM taojy123/vlang
-RUN mkdir /test/semver/
-WORKDIR /test/semver/
+RUN mkdir /home/semver/
+WORKDIR /home/semver/
 COPY . .
 RUN v test .
