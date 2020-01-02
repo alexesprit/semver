@@ -139,21 +139,21 @@ fn can_expand(input string) bool {
 }
 
 fn expand_comparator_set(input string) ?ComparatorSet {
-	match input[0] {
+	set := match input[0] {
 		`~` {
-			return expand_tilda(input[1..])
+			expand_tilda(input[1..])
 		}
 		`^` {
-			return expand_caret(input[1..])
+			expand_caret(input[1..])
 		}
-		else {}
+		else {
+			expand_hyphen(input)
+		}
+	} or {
+		return error('Invalid comparator set: $input')
 	}
 
-	if (input.contains(HyphenRangeSep)) {
-		return expand_hyphen(input)
-	}
-
-	return none
+	return set
 }
 
 fn expand_tilda(raw_version string) ?ComparatorSet {

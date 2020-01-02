@@ -141,6 +141,11 @@ const (
 	invalid_versions_to_test = [
 		'a.b.c', '1.2', '1.2.3.4', '1.2.3-alpha@', '1.2.3+meta%'
 	]
+
+	invalid_ranges_to_test = [
+		'^a', '~b', 'a - c', '>a', 'a'
+	]
+
 )
 
 fn test_from() {
@@ -227,6 +232,17 @@ fn test_satisfies() {
 
 		assert ver.satisfies(item.range_satisfied)
 		assert !ver.satisfies(item.range_unsatisfied)
+	}
+}
+
+fn test_satisfies_invalid() {
+	ver := semver.from('1.0.0') or {
+		assert false
+		return
+	}
+
+	for item in invalid_ranges_to_test {
+		assert ver.satisfies(item) == false
 	}
 }
 
