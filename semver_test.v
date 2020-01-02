@@ -278,3 +278,13 @@ fn test_coerce_invalid() {
 	}
 	assert false
 }
+
+fn test_is_valid() {
+	for item in versions_to_test {
+		assert semver.is_valid(item.raw)
+	}
+
+	for item in invalid_versions_to_test {
+		assert semver.is_valid(item) == false
+	}
+}

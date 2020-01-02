@@ -89,3 +89,7 @@ pub fn coerce(input string) ?Version {
 
 	return ver
 }
+
+pub fn is_valid(input string) bool {
+	return is_version_valid(input)
+}

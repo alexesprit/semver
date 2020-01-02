@@ -5,6 +5,12 @@ module semver
  */
 
 [inline]
+fn is_version_valid(input string) bool {
+	raw_ver := parse(input)
+	return raw_ver.is_valid()
+}
+
+[inline]
 fn coerce_version(input string) ?Version {
 	raw_ver := parse(input)
 	ver := raw_ver.coerce() or {
