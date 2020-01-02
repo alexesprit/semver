@@ -9,7 +9,7 @@ module semver
  */
 
 // Structure representing version in semver format.
-struct Version {
+pub struct Version {
 pub:
 	major int
 	minor int
