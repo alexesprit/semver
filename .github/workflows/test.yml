@@ -5,7 +5,8 @@ on:
   pull_request:
     types: [opened, synchronize]
 jobs:
-  build:
+  test:
+    name: Run tests
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
