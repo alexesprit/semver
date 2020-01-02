@@ -183,7 +183,7 @@ fn test_from() {
 }
 
 fn test_increment() {
-	version1 := semver.Version { major: 1, minor: 2, patch: 3 }
+	version1 := semver.build(1, 2, 3)
 
 	version1_inc := version1.increment(.major)
 	assert version1_inc.major == 2
@@ -202,10 +202,10 @@ fn test_increment() {
 }
 
 fn test_compare() {
-	first := semver.Version { major: 1, minor: 0, patch: 0 }
-	patch := semver.Version { major: 1, minor: 0, patch: 1 }
-	minor := semver.Version { major: 1, minor: 2, patch: 3 }
-	major := semver.Version { major: 2, minor: 0, patch: 0 }
+	first := semver.build(1, 0, 0)
+	patch := semver.build(1, 0, 1)
+	minor := semver.build(1, 2, 3)
+	major := semver.build(2, 0, 0)
 
 	assert first.le(first)
 	assert first.ge(first)

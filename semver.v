@@ -9,7 +9,7 @@ module semver
  */
 
 // Structure representing version in semver format.
-pub struct Version {
+struct Version {
 pub:
 	major int
 	minor int
@@ -39,6 +39,12 @@ pub fn from(input string) ?Version {
 	}
 
 	return version
+}
+
+// build returns Version structure with given major, minor and patch versions.
+pub fn build(major, minor, patch int) Version {
+	// TODO Check if versions are greater than zero.
+	return Version { major, minor, patch, '', '' }
 }
 
 /*
