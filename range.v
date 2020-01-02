@@ -123,6 +123,8 @@ fn parse_comparator(input string) ?Comparator {
 	} else if input.starts_with('<') {
 		op = .lt
 		raw_version = input[1..]
+	} else if input.starts_with('=') {
+		raw_version = input[1..]
 	} else {
 		raw_version = input
 	}
