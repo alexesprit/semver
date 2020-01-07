@@ -14,6 +14,8 @@ const (
 	Major = 0
 	Minor = 1
 	Patch = 2
+
+	Versions = [Major, Minor, Patch]
 )
 
 // TODO: Rewrite using regexps?
@@ -45,16 +47,6 @@ fn parse(input string) RawVersion {
 	}
 }
 
-fn make_version(raw_ints []string, prerelease, metadata string) Version {
-	return Version {
-		raw_ints[Major].int(),
-		raw_ints[Minor].int(),
-		raw_ints[Patch].int(),
-		prerelease,
-		metadata
-	}
-}
-
 fn (ver RawVersion) is_valid() bool {
 	if ver.raw_ints.len != 3 {
 		return false
@@ -69,16 +61,22 @@ fn (ver RawVersion) is_valid() bool {
 }
 
 fn (raw_ver RawVersion) coerce() ?Version {
+	ver := raw_ver.complete()
+
+	if !is_valid_number(ver.raw_ints[Major]) {
+		return error('Invalid major version: $ver.raw_ints[Major]')
+	}
+
+	return ver.to_version()
+}
+
+fn (raw_ver RawVersion) complete() RawVersion {
 	mut raw_ints := raw_ver.raw_ints
 	for raw_ints.len < 3 {
 		raw_ints << '0'
 	}
 
-	if !is_valid_number(raw_ints[Major]) {
-		return error('Invalid major version: $raw_ints[Major]')
-	}
-
-	return make_version(raw_ints, raw_ver.prerelease, raw_ver.metadata)
+	return RawVersion { raw_ints, raw_ver.prerelease, raw_ver.metadata }
 }
 
 fn (raw_ver RawVersion) validate() ?Version {
@@ -86,6 +84,15 @@ fn (raw_ver RawVersion) validate() ?Version {
 		return none
 	}
 
-	return make_version(
-		raw_ver.raw_ints, raw_ver.prerelease, raw_ver.metadata)
+	return raw_ver.to_version()
+}
+
+fn (raw_ver RawVersion) to_version() Version {
+	return Version {
+		raw_ver.raw_ints[Major].int(),
+		raw_ver.raw_ints[Minor].int(),
+		raw_ver.raw_ints[Patch].int(),
+		raw_ver.prerelease,
+		raw_ver.metadata
+	}
 }

@@ -8,6 +8,7 @@ const (
 	ComparatorSep = ' '
 	ComparatorSetSep = ' || '
 	HyphenRangeSep = ' - '
+	XRangeSymbols = 'Xx*'
 )
 
 enum Operator { gt lt ge le eq }
@@ -133,9 +134,42 @@ fn parse_comparator(input string) ?Comparator {
 	return Comparator { version, op }
 }
 
+fn parse_xrange(input string) ?Version {
+	mut raw_ver := parse(input).complete()
+
+	for typ in Versions {
+		if raw_ver.raw_ints[typ].index_any(XRangeSymbols) == -1 {
+			continue
+		}
+
+		match typ {
+			Major {
+				raw_ver.raw_ints[Major] = '0'
+				raw_ver.raw_ints[Minor] = '0'
+				raw_ver.raw_ints[Patch] = '0'
+			}
+			Minor {
+				raw_ver.raw_ints[Minor] = '0'
+				raw_ver.raw_ints[Patch] = '0'
+			}
+			Patch {
+				raw_ver.raw_ints[Patch] = '0'
+			}
+			else {}
+		}
+	}
+
+	if !raw_ver.is_valid() {
+		return none
+	}
+
+	return raw_ver.to_version()
+}
+
 fn can_expand(input string) bool {
 	return
-		input[0] == `~` || input[0] == `^` || input.contains(HyphenRangeSep)
+		input[0] == `~` || input[0] == `^` ||
+		input.contains(HyphenRangeSep) || input.index_any(XRangeSymbols) > -1
 }
 
 fn expand_comparator_set(input string) ?ComparatorSet {
@@ -147,7 +181,11 @@ fn expand_comparator_set(input string) ?ComparatorSet {
 			expand_caret(input[1..])
 		}
 		else {
-			expand_hyphen(input)
+			if input.contains(HyphenRangeSep) {
+				expand_hyphen(input)
+			} else {
+				expand_xrange(input)
+			}
 		}
 	} or {
 		return error('Invalid comparator set: $input')
@@ -203,6 +241,30 @@ fn expand_hyphen(raw_range string) ?ComparatorSet {
 	println(1)
 
 	return make_comparator_set_ge_le(min_ver, max_ver)
+}
+
+fn expand_xrange(raw_range string) ?ComparatorSet {
+	min_ver := parse_xrange(raw_range) or {
+		return none
+	}
+
+	if min_ver.major == 0 {
+		comparators := [
+			Comparator { min_ver, Operator.ge },
+		]
+
+		return ComparatorSet { comparators }
+	}
+
+	mut max_ver := min_ver
+
+	if min_ver.minor == 0 {
+		max_ver = min_ver.increment(.major)
+	} else {
+		max_ver = min_ver.increment(.minor)
+	}
+
+	return make_comparator_set_ge_lt(min_ver, max_ver)
 }
 
 fn make_comparator_set_ge_lt(min, max Version) ComparatorSet {
