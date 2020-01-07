@@ -60,6 +60,10 @@ fn (ver RawVersion) is_valid() bool {
 		is_valid_string(ver.metadata)
 }
 
+fn (ver RawVersion) is_missing(typ int) bool {
+	return typ >= ver.raw_ints.len - 1
+}
+
 fn (raw_ver RawVersion) coerce() ?Version {
 	ver := raw_ver.complete()
 

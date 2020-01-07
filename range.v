@@ -234,11 +234,20 @@ fn expand_hyphen(raw_range string) ?ComparatorSet {
 	min_ver := coerce_version(raw_versions[0]) or {
 		return none
 	}
-	max_ver := coerce_version(raw_versions[1]) or {
+
+	raw_max_ver := parse(raw_versions[1])
+	if raw_max_ver.is_missing(Major) {
 		return none
 	}
 
-	println(1)
+	mut max_ver := raw_max_ver.coerce() or {
+		return none
+	}
+
+	if raw_max_ver.is_missing(Minor) {
+		max_ver = max_ver.increment(.minor)
+		return make_comparator_set_ge_lt(min_ver, max_ver)
+	}
 
 	return make_comparator_set_ge_le(min_ver, max_ver)
 }
