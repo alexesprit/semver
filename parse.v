@@ -5,17 +5,18 @@ module semver
  */
 
 struct RawVersion {
-	raw_ints []string
 	prerelease string
 	metadata string
+mut:
+	raw_ints []string
 }
 
 const (
-	Major = 0
-	Minor = 1
-	Patch = 2
+	ver_major = 0
+	ver_minor = 1
+	ver_patch = 2
 
-	Versions = [Major, Minor, Patch]
+	Versions = [ver_major, ver_minor, ver_patch]
 )
 
 // TODO: Rewrite using regexps?
@@ -41,9 +42,9 @@ fn parse(input string) RawVersion {
 	raw_ints := raw_version.split('.')
 
 	return RawVersion {
-		raw_ints,
-		prerelease,
-		metadata
+		prerelease: prerelease
+		metadata: metadata
+		raw_ints: raw_ints
 	}
 }
 
@@ -53,9 +54,9 @@ fn (ver RawVersion) is_valid() bool {
 	}
 
 	return
-		is_valid_number(ver.raw_ints[Major]) &&
-		is_valid_number(ver.raw_ints[Minor]) &&
-		is_valid_number(ver.raw_ints[Patch]) &&
+		is_valid_number(ver.raw_ints[ver_major]) &&
+		is_valid_number(ver.raw_ints[ver_minor]) &&
+		is_valid_number(ver.raw_ints[ver_patch]) &&
 		is_valid_string(ver.prerelease) &&
 		is_valid_string(ver.metadata)
 }
@@ -67,8 +68,8 @@ fn (ver RawVersion) is_missing(typ int) bool {
 fn (raw_ver RawVersion) coerce() ?Version {
 	ver := raw_ver.complete()
 
-	if !is_valid_number(ver.raw_ints[Major]) {
-		return error('Invalid major version: $ver.raw_ints[Major]')
+	if !is_valid_number(ver.raw_ints[ver_major]) {
+		return error('Invalid major version: $ver.raw_ints[ver_major]')
 	}
 
 	return ver.to_version()
@@ -80,7 +81,11 @@ fn (raw_ver RawVersion) complete() RawVersion {
 		raw_ints << '0'
 	}
 
-	return RawVersion { raw_ints, raw_ver.prerelease, raw_ver.metadata }
+	return RawVersion {
+		prerelease: raw_ver.prerelease
+		metadata: raw_ver.metadata
+		raw_ints: raw_ints
+	}
 }
 
 fn (raw_ver RawVersion) validate() ?Version {
@@ -93,9 +98,9 @@ fn (raw_ver RawVersion) validate() ?Version {
 
 fn (raw_ver RawVersion) to_version() Version {
 	return Version {
-		raw_ver.raw_ints[Major].int(),
-		raw_ver.raw_ints[Minor].int(),
-		raw_ver.raw_ints[Patch].int(),
+		raw_ver.raw_ints[ver_major].int(),
+		raw_ver.raw_ints[ver_minor].int(),
+		raw_ver.raw_ints[ver_patch].int(),
 		raw_ver.prerelease,
 		raw_ver.metadata
 	}

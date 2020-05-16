@@ -38,7 +38,6 @@ fn increment_version(ver Version, typ Increment) Version {
 		.patch {
 			patch++
 		}
-		else {}
 	}
 
 	return Version { major, minor, patch, ver.prerelease, ver.metadata }
