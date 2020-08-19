@@ -16,7 +16,7 @@ const (
 	ver_minor = 1
 	ver_patch = 2
 
-	Versions = [ver_major, ver_minor, ver_patch]
+	versions = [ver_major, ver_minor, ver_patch]
 )
 
 // TODO: Rewrite using regexps?
