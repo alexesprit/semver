@@ -5,10 +5,10 @@ module semver
  */
 
 const (
-	ComparatorSep = ' '
-	ComparatorSetSep = ' || '
-	HyphenRangeSep = ' - '
-	XRangeSymbols = 'Xx*'
+	comparator_sep = ' '
+	comparator_set_sep = ' || '
+	hyphen_range_sep = ' - '
+	x_range_symbols = 'Xx*'
 )
 
 enum Operator { gt lt ge le eq }
@@ -67,7 +67,7 @@ fn (c Comparator) satisfies(ver Version) bool {
 }
 
 fn parse_range(input string) ?Range {
-	raw_comparator_sets := input.split(ComparatorSetSep)
+	raw_comparator_sets := input.split(comparator_set_sep)
 	mut comparator_sets := []ComparatorSet{}
 
 	for raw_comp_set in raw_comparator_sets {
@@ -88,7 +88,7 @@ fn parse_range(input string) ?Range {
 }
 
 fn parse_comparator_set(input string) ?ComparatorSet {
-	raw_comparators := input.split(ComparatorSep)
+	raw_comparators := input.split(comparator_sep)
 	if raw_comparators.len > 2 {
 		return error('Invalid format of comparator set')
 	}
@@ -136,8 +136,8 @@ fn parse_comparator(input string) ?Comparator {
 fn parse_xrange(input string) ?Version {
 	mut raw_ver := parse(input).complete()
 
-	for typ in Versions {
-		if raw_ver.raw_ints[typ].index_any(XRangeSymbols) == -1 {
+	for typ in versions {
+		if raw_ver.raw_ints[typ].index_any(x_range_symbols) == -1 {
 			continue
 		}
 
@@ -168,7 +168,7 @@ fn parse_xrange(input string) ?Version {
 fn can_expand(input string) bool {
 	return
 		input[0] == `~` || input[0] == `^` ||
-		input.contains(HyphenRangeSep) || input.index_any(XRangeSymbols) > -1
+		input.contains(hyphen_range_sep) || input.index_any(x_range_symbols) > -1
 }
 
 fn expand_comparator_set(input string) ?ComparatorSet {
@@ -182,7 +182,7 @@ fn expand_comparator_set(input string) ?ComparatorSet {
 		else {}
 	}
 
-	if input.contains(HyphenRangeSep) {
+	if input.contains(hyphen_range_sep) {
 		return expand_hyphen(input)
 	}
 
@@ -221,7 +221,7 @@ fn expand_caret(raw_version string) ?ComparatorSet {
 }
 
 fn expand_hyphen(raw_range string) ?ComparatorSet {
-	raw_versions := raw_range.split(HyphenRangeSep)
+	raw_versions := raw_range.split(hyphen_range_sep)
 	if raw_versions.len != 2 {
 		return none
 	}
