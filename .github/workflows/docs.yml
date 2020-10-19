@@ -9,14 +9,19 @@ jobs:
     name: Update docs
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-      - uses: nocturlab/setup-vlang-action@master
+      - name: Checkout the repository
+        uses: actions/checkout@v1
+
+      - name: Install V
+        uses: nocturlab/setup-vlang-action@master
         with:
           v-version: master
+
       - name: Generate documentation
         uses: test-room-7/action-create-v-docs@v0
         with:
           docs-dir: docs
+
       - name: Update documentation
         uses: test-room-7/action-update-file@v1
         with:
