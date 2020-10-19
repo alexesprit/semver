@@ -2,6 +2,16 @@
 
 A library for working with versions in [semver][semver] format.
 
+## Installation
+
+```sh
+# Install via V CLI
+> v install alexesprit.semver
+
+# Install via vpkg
+> vpkg get semver
+```
+
 ## Usage
 
 ```v
@@ -33,6 +43,11 @@ false
 true
 ```
 
-For more details see `semver.v` file.
+For more details see [semver.v][semver-file] file.
+
+## License
+
+Licensed under the [MIT License](LICENSE.md).
 
 [semver]: https://semver.org/
+[semver-file]: https://github.com/alexesprit/semver/blob/master/semver.v
