@@ -271,7 +271,7 @@ fn expand_xrange(raw_range string) ?ComparatorSet {
 	return make_comparator_set_ge_lt(min_ver, max_ver)
 }
 
-fn make_comparator_set_ge_lt(min, max Version) ComparatorSet {
+fn make_comparator_set_ge_lt(min Version, max Version) ComparatorSet {
 	comparators := [
 		Comparator { min, Operator.ge },
 		Comparator { max, Operator.lt }
@@ -280,7 +280,7 @@ fn make_comparator_set_ge_lt(min, max Version) ComparatorSet {
 	return ComparatorSet { comparators }
 }
 
-fn make_comparator_set_ge_le(min, max Version) ComparatorSet {
+fn make_comparator_set_ge_le(min Version, max Version) ComparatorSet {
 	comparators := [
 		Comparator { min, Operator.ge },
 		Comparator { max, Operator.le }
