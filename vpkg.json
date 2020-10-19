@@ -1,0 +1,7 @@
+{
+  "name": "semver",
+  "version": "0.3.0",
+  "author": ["alexesprit"],
+  "repo": "https://github.com/alexesprit/semver",
+  "dependencies": []
+}
