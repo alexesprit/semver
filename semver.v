@@ -14,8 +14,8 @@ pub:
 	major int
 	minor int
 	patch int
-	prerelease string = ''
-	metadata string = ''
+	prerelease string
+	metadata string
 }
 
 // Enum representing type of version increment.
@@ -42,7 +42,7 @@ pub fn from(input string) ?Version {
 }
 
 // build returns Version structure with given major, minor and patch versions.
-pub fn build(major, minor, patch int) Version {
+pub fn build(major int, minor int, patch int) Version {
 	// TODO Check if versions are greater than zero.
 	return Version { major, minor, patch, '', '' }
 }
