@@ -1,7 +1,5 @@
-// * Documentation: https://docs.npmjs.com/misc/semver
 module semver
 
-// * Structures.
 // Structure representing version in semver format.
 pub struct Version {
 pub:
@@ -19,7 +17,6 @@ pub enum Increment {
 	patch
 }
 
-// * Constructor.
 // from returns Version structure parsed from input string.
 pub fn from(input string) ?Version {
 	if input.len == 0 {
@@ -38,38 +35,42 @@ pub fn build(major int, minor int, patch int) Version {
 	return Version{major, minor, patch, '', ''}
 }
 
-// * Transformation.
 // increment returns Version structure with incremented values.
 pub fn (ver Version) increment(typ Increment) Version {
 	return increment_version(ver, typ)
 }
 
-// * Comparison.
+// satisfies checks if the current version satisfies a given input range.
 pub fn (ver Version) satisfies(input string) bool {
 	return version_satisfies(ver, input)
 }
 
+// eq checks if the version equals a given input version.
 pub fn (v1 Version) eq(v2 Version) bool {
 	return compare_eq(v1, v2)
 }
 
+// eq checks if the version is greater than a given input version.
 pub fn (v1 Version) gt(v2 Version) bool {
 	return compare_gt(v1, v2)
 }
 
+// eq checks if the version is less than a given input version.
 pub fn (v1 Version) lt(v2 Version) bool {
 	return compare_lt(v1, v2)
 }
 
+// eq checks if the version is greater or equal than a given input version.
 pub fn (v1 Version) ge(v2 Version) bool {
 	return compare_ge(v1, v2)
 }
 
+// eq checks if the version is less or equal than a given input version.
 pub fn (v1 Version) le(v2 Version) bool {
 	return compare_le(v1, v2)
 }
 
-// * Utilites.
+// coerce coerces a given string to a semver if it's possible.
 pub fn coerce(input string) ?Version {
 	ver := coerce_version(input) or {
 		return error('Invalid version: $input')
@@ -77,6 +78,7 @@ pub fn coerce(input string) ?Version {
 	return ver
 }
 
+// is_valid checks if a given string is a valid semver.
 pub fn is_valid(input string) bool {
 	return is_version_valid(input)
 }

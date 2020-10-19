@@ -1,6 +1,5 @@
 module semver
 
-// * Private functions.
 [inline]
 fn is_version_valid(input string) bool {
 	raw_ver := parse(input)

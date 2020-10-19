@@ -1,6 +1,5 @@
 module semver
 
-// * Private functions.
 [inline]
 fn version_satisfies(ver Version, input string) bool {
 	range := parse_range(input) or {

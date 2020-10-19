@@ -1,6 +1,5 @@
 module semver
 
-// * Private functions.
 const (
 	comparator_sep     = ' '
 	comparator_set_sep = ' || '

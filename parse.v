@@ -1,6 +1,5 @@
 module semver
 
-// * Private structs and functions.
 struct RawVersion {
 	prerelease string
 	metadata   string
