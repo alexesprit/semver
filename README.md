@@ -43,11 +43,11 @@ false
 true
 ```
 
-For more details see [semver.v][semver-file] file.
+For more details see the [documentation][docs].
 
 ## License
 
 Licensed under the [MIT License](LICENSE.md).
 
+[docs]: https://alexesprit.com/semver/
 [semver]: https://semver.org/
-[semver-file]: https://github.com/alexesprit/semver/blob/master/semver.v
